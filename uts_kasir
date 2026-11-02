@@ -1,0 +1,40 @@
+<?php
+// Koneksi ke database
+$conn = new mysqli("localhost", "root", "", "db_penjualan_uts");
+
+// Mengecek apakah tombol 'Proses Checkout' ditekan
+if(isset($_POST['beli'])) {
+    $id_barang = $_POST['id_barang'];
+    $jumlah = $_POST['jumlah'];
+    
+    // Aplikasi memanggil Stored Procedure untuk checkout
+    $sql = "CALL sp_CheckoutBarang($id_barang, $jumlah)";
+    
+    if($conn->query($sql) === TRUE) {
+        echo "<div style='background-color:#d4edda; color:#155724; padding:10px; border-radius:5px;'>
+              <b>Transaksi Berhasil!</b> Cek stok di database, pasti otomatis berkurang.</div><br>";
+    } else {
+        echo "<div style='background-color:#f8d7da; color:#721c24; padding:10px; border-radius:5px;'>
+              <b>Transaksi Gagal!</b> Pastikan stok barang mencukupi.</div><br>";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sistem Kasir</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px; max-width: 400px;">
+    <h3>Aplikasi Kasir (Stored Procedure)</h3>
+    <form method="POST" style="border:1px solid #ccc; padding:15px; border-radius:8px;">
+        <label>ID Barang:</label><br>
+        <input type="number" name="id_barang" placeholder="Contoh: 1" required style="margin-bottom: 15px; width: 100%; padding: 5px;"><br>
+        
+        <label>Jumlah Beli:</label><br>
+        <input type="number" name="jumlah" placeholder="Contoh: 2" required style="margin-bottom: 15px; width: 100%; padding: 5px;"><br>
+        
+        <button type="submit" name="beli" style="background-color:#007BFF; color:white; padding: 8px 15px; border:none; border-radius:4px; cursor:pointer; width:100%;">Proses Checkout</button>
+    </form>
+</body>
+</html>
